@@ -10,7 +10,9 @@ from extract_judge_answer import extract_answer, extract_true_answer, judge_answ
 import argparse
 import numpy as np
 import random
+import os
 
+huggingface_token = os.environ['HUGGING_FACE_TOKEN']
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Evaluate the model")
@@ -93,10 +95,14 @@ def main(args):
     model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path,
             torch_dtype=torch.bfloat16,
-            device_map=device
+            device_map=device,
+            token=huggingface_token,
     )
     model.eval()
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.model_name_or_path,
+        token=huggingface_token,
+    )
 
     # load reward model
     reward_model = RewardModel(
