@@ -11,6 +11,7 @@ import argparse
 import numpy as np
 import random
 import os
+import time
 
 huggingface_token = os.environ['HUGGING_FACE_TOKEN']
 
@@ -150,6 +151,7 @@ def main(args):
     
     print(f"Start to evaluate {args.dataset} from {start_data_idx} to {end_data_idx}...")
 
+    total_run_time, sample_count = 0, 0
     data_idx_list = range(start_data_idx, end_data_idx)
     for i in tqdm(data_idx_list):
         example = dataset[i]
@@ -165,6 +167,7 @@ def main(args):
         if true_answer is None:
             continue
 
+        start_time = time.time()
         original_output, hidden_states_list, input_ids = original_generation(
                 input_text=example["formatted"],
                 model=model,
@@ -187,6 +190,9 @@ def main(args):
                 k=args.k,
                 reward_threshold=args.reward_threshold,
         )
+        end_time = time.time()
+        total_time += end_time - start_time
+        sample_count += 1
 
         update_count += (len(reward_history) - 1)   
         
@@ -239,7 +245,11 @@ def main(args):
     print(f"Average update length: {update_count / total:.4f}")
     print(f"Average original length: {original_length / total:.4f}")
     print(f"Average optimized length: {optimized_length / total:.4f}")
-    print(f"Average fitten length: {fitten_length / total:.4f}")       
+    print(f"Average fitten length: {fitten_length / total:.4f}")
+    print(
+        f"Run time on {sample_count} samples: {int(total_run_time)} seconds; "
+        f"Avg: {int(total_run_time) // sample_count} seconds per sample"
+    )      
 
 
 if __name__ == "__main__":
