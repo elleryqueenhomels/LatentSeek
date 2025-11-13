@@ -134,6 +134,8 @@ def main(args):
 
     start_data_idx = max(0, args.start_data_idx)
     end_data_idx = min(args.end_data_idx, len(dataset))
+
+    total_run_time, sample_count = 0, 0
   
     if args.resume:
         print(f"Resume from {output_dir}")
@@ -147,11 +149,12 @@ def main(args):
         original_length = logistics["original_length"]
         optimized_length = logistics["optimized_length"]
         fitten_length = logistics["fitten_length"]
+        total_run_time = logistics["total_run_time"]
+        sample_count = logistics["sample_count"]
 
     
     print(f"Start to evaluate {args.dataset} from {start_data_idx} to {end_data_idx}...")
 
-    total_run_time, sample_count = 0, 0
     data_idx_list = range(start_data_idx, end_data_idx)
     for i in tqdm(data_idx_list):
         example = dataset[i]
@@ -237,7 +240,9 @@ def main(args):
             "update_count": update_count,
             "original_length": original_length,
             "optimized_length": optimized_length,
-            "fitten_length": fitten_length
+            "fitten_length": fitten_length,
+            "total_run_time": total_run_time,
+            "sample_count": sample_count,
         }, f"{output_dir}/logistics.pt")
 
     print(f"Original accuracy: {original_correct / total:.4f}")
