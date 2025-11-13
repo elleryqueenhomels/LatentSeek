@@ -191,7 +191,7 @@ def main(args):
                 reward_threshold=args.reward_threshold,
         )
         end_time = time.time()
-        total_time += end_time - start_time
+        total_run_time += end_time - start_time
         sample_count += 1
 
         update_count += (len(reward_history) - 1)   
