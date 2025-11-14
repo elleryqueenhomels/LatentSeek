@@ -44,7 +44,7 @@ def judge_answer(input, label, data_name="gsm8k", extract=True, prompt_idx=0):
     Returns:
         bool: True if the answer is correct, False otherwise
     """
-    if "gsm8k" in data_name.lower():
+    if "gsm8k" in data_name.lower() or "asdiv" in data_name.lower():
         if extract:
             input = extract_answer(input, data_name="gsm8k", prompt_idx=prompt_idx)
         return (input == label)
