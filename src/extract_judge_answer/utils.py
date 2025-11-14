@@ -15,12 +15,14 @@ def extract_true_answer(text, name="gsm8k"):
     Returns:
         answer: extracted answer
     '''
-    if "gsm8k" in name:
+    if "gsm8k" in name.lower():
         label = text.split("#### ")[1]
         return label
-    elif "MATH-500" in name:
+    elif "math-500" in name.lower():
         return text
-    elif "AIME_2024" in name:
+    elif "aime" in name.lower():
+        return text
+    elif "asdiv" in name.lower():
         return text
     else:
         raise ValueError(f"Unknown dataset name: {name}")
@@ -42,11 +44,11 @@ def judge_answer(input, label, data_name="gsm8k", extract=True, prompt_idx=0):
     Returns:
         bool: True if the answer is correct, False otherwise
     """
-    if "gsm8k" in data_name:
+    if "gsm8k" in data_name.lower():
         if extract:
             input = extract_answer(input, data_name="gsm8k", prompt_idx=prompt_idx)
         return (input == label)
-    elif "MATH-500" in data_name:
+    elif "math-500" in data_name.lower():
         if extract:
             input = extract_answer(input, data_name="MATH-500", prompt_idx=prompt_idx)
 
@@ -72,9 +74,9 @@ def judge_answer(input, label, data_name="gsm8k", extract=True, prompt_idx=0):
             return True
         return False
 
-    elif "AIME_2024" in data_name:
+    elif "aime" in data_name.lower():
         if extract:
-            input = extract_answer(input, data_name="AIME_2024", prompt_idx=prompt_idx)
+            input = extract_answer(input, data_name="AIME", prompt_idx=prompt_idx)
             input = str(input)
             label = str(label)
         return (input == label)
@@ -95,7 +97,7 @@ def extract_answer(text, data_name="gsm8k", prompt_idx=0, model_name="Qwen2.5-7B
     Returns:
         answer: extracted answer(pure numbers)
     '''
-    if "gsm8k" in data_name:
+    if "gsm8k" in data_name.lower() or "asdiv" in data_name.lower():
         if prompt_idx == 0:
             # 0: boxed
             if "qwen2.5-1.5b-instruct" in model_name.lower():
@@ -131,7 +133,7 @@ def extract_answer(text, data_name="gsm8k", prompt_idx=0, model_name="Qwen2.5-7B
         else:
             raise ValueError(f"Unknown prompt index: {prompt_idx} for extract answer")
 
-    elif "MATH-500" in data_name:
+    elif "math-500" in data_name.lower():
         if prompt_idx == 0:
             # 0: boxed
             temp = extract_fn(text, data_name='math')
@@ -165,7 +167,7 @@ def extract_answer(text, data_name="gsm8k", prompt_idx=0, model_name="Qwen2.5-7B
                 else:
                     return None
 
-    elif "AIME_2024" in data_name:
+    elif "aime" in data_name.lower():
         if prompt_idx == 0:
             # 0: boxed
             temp = _extract_answer(text)
