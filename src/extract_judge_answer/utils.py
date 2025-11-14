@@ -23,7 +23,8 @@ def extract_true_answer(text, name="gsm8k"):
     elif "aime" in name.lower():
         return text
     elif "asdiv" in name.lower():
-        return text
+        label = text.split("####")[1]
+        return label
     else:
         raise ValueError(f"Unknown dataset name: {name}")
 
