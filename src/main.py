@@ -188,6 +188,7 @@ def main(args):
                 original_hidden_states_list=hidden_states_list, 
                 input_ids=input_ids,
                 max_num_steps=args.max_num_steps,
+                max_new_tokens=args.max_new_tokens,
                 lr=args.lr,
                 grad_clip=args.grad_clip,
                 k=args.k,
